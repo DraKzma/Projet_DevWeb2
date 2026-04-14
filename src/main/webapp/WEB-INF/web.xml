@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="WebApp_ID" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+	<display-name>Projet_DevWeb2</display-name>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.htm</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>index.xhtml</welcome-file>
+		<welcome-file>default.html</welcome-file>
+		<welcome-file>default.htm</welcome-file>
+		<welcome-file>default.jsp</welcome-file>
+		<welcome-file>default.xhtml</welcome-file>
+	</welcome-file-list>
+	<context-param>
+      <param-name>JDBC_DRIVER</param-name>
+      <param-value>com.mysql.cj.jdbc.Driver</param-value>
+    </context-param>
+    <context-param>
+      <param-name>JDBC_URL</param-name>
+      <param-value>jdbc:mysql://localhost:3306/Projet_DevWeb2</param-value>
+    </context-param>
+    <context-param>
+      <param-name>JDBC_LOGIN</param-name>
+      <param-value>webuser</param-value>
+    </context-param>
+    <context-param>
+      <param-name>JDBC_PASSWORD</param-name>
+      <param-value>multipass</param-value>
+    </context-param>
+</web-app>

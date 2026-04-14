@@ -1,0 +1,51 @@
+package projet_dw2;
+
+import java.io.IOException;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
+@WebServlet("/SignIn")
+public class SignIn extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	
+	public void init() {
+		ParamBD.init(this.getServletContext());
+	}
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/SignIn.jsp");
+		rd.forward(request, response);
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String username = request.getParameter("username");
+		String password = request.getParameter("password");
+		
+		//Si formulaire non rempli
+		if((username.equals("")) || (password.equals(""))) {
+			doGet(request, response);
+		}
+		//Si formulaire rempli
+		else {
+			User user = User.SignIn(username, password);
+			//Si mot de passe correct
+			if(user != null) {
+				HttpSession session = request.getSession();
+				session.setAttribute("user", user);
+				System.out.println("User: " + user.getUsername() + " connected successfully.");
+				response.sendRedirect(request.getContextPath() + "/DocumentChoice");
+			}
+			//Si mot de passe incorrect
+			else {
+				doGet(request,response);
+			}
+		}
+	}
+
+}

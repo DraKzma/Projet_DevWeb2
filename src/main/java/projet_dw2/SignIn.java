@@ -19,8 +19,19 @@ public class SignIn extends HttpServlet {
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/SignIn.jsp");
-		rd.forward(request, response);
+		HttpSession session = request.getSession();
+		User user = (User) session.getAttribute("user");
+		
+		if(user != null) {
+			//L'utilisateur connectee est automatiquement redirigee vers DocumentChoice
+			response.sendRedirect(request.getContextPath() + "/DocumentChoice");
+		}
+		else {
+			//L'utilisateur non connectee est transportee sur l'index permettant de se connecter ou s'inscire
+			request.setAttribute("error", 0);
+			RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/SignIn.jsp");
+			rd.forward(request, response);
+		}
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -29,7 +40,9 @@ public class SignIn extends HttpServlet {
 		
 		//Si formulaire non rempli
 		if((username.equals("")) || (password.equals(""))) {
-			doGet(request, response);
+			request.setAttribute("error", 1);
+			RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/SignIn.jsp");
+			rd.forward(request, response);
 		}
 		//Si formulaire rempli
 		else {
@@ -43,7 +56,9 @@ public class SignIn extends HttpServlet {
 			}
 			//Si mot de passe incorrect
 			else {
-				doGet(request,response);
+				request.setAttribute("error", 2);
+				RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/SignIn.jsp");
+				rd.forward(request, response);
 			}
 		}
 	}

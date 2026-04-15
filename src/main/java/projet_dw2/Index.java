@@ -8,6 +8,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("")
 public class Index extends HttpServlet {
@@ -18,8 +19,18 @@ public class Index extends HttpServlet {
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/Index.jsp");
-		rd.forward(request, response);
+		HttpSession session = request.getSession();
+		User user = (User) session.getAttribute("user");
+		
+		if(user != null) {
+			//L'utilisateur connectee est automatiquement redirigee vers DocumentChoice
+			response.sendRedirect(request.getContextPath() + "/DocumentChoice");
+		}
+		else {
+			//L'utilisateur non connectee est transportee sur l'index permettant de se connecter ou s'inscire
+			RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/Index.jsp");
+			rd.forward(request, response);
+		}
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

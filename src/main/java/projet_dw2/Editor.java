@@ -1,5 +1,6 @@
 package projet_dw2;
 
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -9,18 +10,17 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-@WebServlet("/SignOff")
-public class SignOff extends HttpServlet {
+@WebServlet("/Editor")
+public class Editor extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
+	public void init() {
+		ParamBD.init(this.getServletContext());
+	}
  
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession();
-		
-		User user = (User) session.getAttribute("user");
-		
-		session.invalidate();
-		System.out.println("User: " + user.getUsername() + " disconnected successfully.");
-		response.sendRedirect(request.getContextPath() + "/");
+		RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/Editor.jsp");
+		rd.forward(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

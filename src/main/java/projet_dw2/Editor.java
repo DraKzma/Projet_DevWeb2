@@ -19,8 +19,18 @@ public class Editor extends HttpServlet {
 	}
  
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/Editor.jsp");
-		rd.forward(request, response);
+		HttpSession session = request.getSession();
+		User user = (User) session.getAttribute("user");
+		
+		if(user != null) {
+			//L'utilisateur connectee peut acceder à la page
+			RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/Editor.jsp");
+			rd.forward(request, response);
+		}
+		else {
+			//L'utilisateur non connectee est transportee sur l'index permettant de se connecter ou s'inscire
+			response.sendRedirect(request.getContextPath() + "/");
+		}
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

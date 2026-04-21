@@ -18,14 +18,14 @@ SOURCE sql/creation.sql; SOURCE sql/insertion.sql;
 **Fait:**
 - Inscriptions/Connexions avec messages d'erreurs adaptees
 - page DocumentChoice pour Creer/Trouver un document (Page non vierge mais ne fait rien à part rediriger sur Editor avec le bon document en parametre pour l'instant)
-- page Editor vierge
+- page Editor incomplète
+- Creation des tables documents & hasAccessTo (permettent de gérer les droits des users pour chaque document du site, trois niveaux de droits possibles: OWNER / EDITOR / VIEWER)
+*Colonnes de hasAccessTo: user\_id / document\_id / role*
+- Creation d'un fichier sur le serveur lors d'un envoie du formulaire DocumentChoice par "create", l'utilisateur est alors affecter en OWNER, ainsi que les admins (permissions = 2 dans la table users), le reste du site est affectee à VIEWER par defaut
 
 **A faire:**
 - css
 - systeme de chat dans Editor
 - edition de document dans Editor
 - liste des membres ayant acces au document en cours ainsi que leur role dans Editor
-- Creation des tables documents & hasAccessTo (permettent de gérer les droits des users pour chaque document du site, trois niveaux de droits possibles: OWNER / EDITOR / VIEWER)
-*Colonnes de hasAccessTo: user\_id / document\_id / role*
-- Creation d'un fichier sur le serveur lors d'un envoie du formulaire DocumentChoice par "create", l'utilisateur est alors affecter en OWNER, ainsi que les admins (permissions = 2 dans la table users), le reste du site est affectee à VIEWER par defaut
-- Permettre aux OWNER d'un document d'ajouter des EDITOR, de bannir des VIEWER, et de supprimer le document du serveur (Plusieurs petits formulaires depuis Editor et gérés depuis le doPost). Permettre aux EDITOR de modifier le document, les VIEWER peuvent seulement voir la page
+- Permettre aux OWNER d'un document d'ajouter des EDITOR, de bannir des VIEWER, et de supprimer le document du serveur. Permettre aux EDITOR de modifier le document, les VIEWER peuvent seulement voir la page

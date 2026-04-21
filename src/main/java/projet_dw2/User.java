@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import projet_dw2.User;
 
@@ -62,6 +63,44 @@ public class User {
 		return new User(id,username);
 	}
 	
+	public static void GiveAccessToDocuments(String username) {
+		try {
+			Connection connexion = DriverManager.getConnection(ParamBD.bdUrl, ParamBD.bdLogin, ParamBD.bdPassword);
+			
+			//On recupere l'id du nouvel utilisateur
+			String sql = "SELECT id"
+					+ " FROM users"
+					+ " WHERE username = ?;";
+			PreparedStatement pst = connexion.prepareStatement(sql);
+			pst.setString(1, username);
+			ResultSet rs = pst.executeQuery();
+			int user_id = 0;
+			while(rs.next()) {
+				user_id = rs.getInt("id");
+			}
+			
+			//On recupere tous les documents de la base
+			sql = "SELECT id"
+					+ " FROM documents;";
+			Statement st = connexion.createStatement();
+			rs = st.executeQuery(sql);
+			int document_id = 0;
+			while(rs.next()) {
+				document_id = rs.getInt("id");
+				
+				//On insere dans hasAccessTo en tant que VIEWER
+				sql = "INSERT INTO hasAccessTo (user_id, document_id, role)"
+					+ " VALUES (?, ?, \'VIEWER\');";
+				pst = connexion.prepareStatement(sql);
+				pst.setInt(1, user_id); pst.setInt(2, document_id);
+				pst.executeUpdate();
+			}
+			rs.close(); pst.close(); st.close(); connexion.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	//Fonction pour s'inscrire, retourne true si tout s'est bien passee et false sinon
 	public static boolean SignUp(String username, String password) {
 		try {
@@ -86,6 +125,9 @@ public class User {
 				String m = password;
 				pst.setString(1, l); pst.setString(2, m);
 				pst.executeUpdate();
+				
+				//On donne les droits d'acces en VIEWER pour chaque documents du site
+				User.GiveAccessToDocuments(username);
 			}
 			else {
 				System.out.println("ERREUR, il existe déjà un utilisateur du même nom dans la base.");

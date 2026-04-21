@@ -179,8 +179,8 @@ public class DocumentChoice extends HttpServlet {
 			Statement st  = connexion.createStatement();
 			rs = st.executeQuery(sql);
 			while(rs.next()) {
-				if(rs.getInt("permissions") == 2 || rs.getInt("id") == user.getId()) {
-					//Si l'user est nous même ou un admin, alors c'est un OWNER du document
+				if(rs.getInt("id") == user.getId()) {
+					//L'user qui vient de creer le document est affecter en tant que OWNER
 					sql = "INSERT INTO hasAccessTo (user_id, document_id, role)"
 					+ " VALUES (?, ?, \'OWNER\');";
 					pst = connexion.prepareStatement(sql);

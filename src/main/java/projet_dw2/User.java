@@ -15,10 +15,10 @@ public class User {
 	private String username;
 	private int permissions; //1: user classique & 2: admin
 	
-	public User(int id, String username) {
+	public User(int id, String username, int permissions) {
 		this.id = id;
 		this.username = username;
-		this.permissions = 1;
+		this.permissions = permissions;
 	}
 	
 	public int getId() {
@@ -35,13 +35,14 @@ public class User {
 	
 	//Fonction pour se connecter, retourne l'utilisateur connectee, null si erreur
 	public static User SignIn(String username, String password) {
-		int id = -1; 
+		int id = -1;
+		int permissions = -1;
 		try { 
 			//Connection à la base 
 			Connection connexion = DriverManager.getConnection(ParamBD.bdUrl, ParamBD.bdLogin, ParamBD.bdPassword); 
 			
 			//Creation de la requete preparee 
-			String sql = "SELECT id" 
+			String sql = "SELECT id, permissions" 
 			+ " FROM users" 
 			+ " WHERE username = ?" 
 			+ " AND password = ?" 
@@ -51,7 +52,8 @@ public class User {
 			pst.setString(1,l); pst.setString(2, m); 
 			ResultSet rs = pst.executeQuery(); 
 			while(rs.next()) { 
-				id = rs.getInt("id"); 
+				id = rs.getInt("id");
+				permissions = rs.getInt("permissions");
 			} 
 			rs.close(); pst.close(); connexion.close(); //fermetures 
 			if(id == -1) { 
@@ -60,7 +62,7 @@ public class User {
 		} catch (SQLException e) { 
 			e.printStackTrace(); 
 		} 
-		return new User(id,username);
+		return new User(id,username,permissions);
 	}
 	
 	public static void GiveAccessToDocuments(String username) {

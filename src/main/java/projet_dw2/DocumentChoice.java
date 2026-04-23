@@ -50,55 +50,62 @@ public class DocumentChoice extends HttpServlet {
 		HttpSession session = request.getSession();
 		User user = (User) session.getAttribute("user");
 		
-		if(docName.equals("")) {
-			//Si le formulaire n'est pas rempli
-			request.setAttribute("error", 1);
-			RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/DocumentChoice.jsp");
-			rd.forward(request, response);
-		}
-		
-		else {
-			//Si le formumaire est rempli
-			if(request.getParameter("create") != null) {
-				/*
-				 * Des choses à faire..
-				 */
-				if(createDocument(docName, user)) {
-					System.out.println("User: " + user.getUsername() + " created document " + docName + " successfully.");
-					response.sendRedirect(request.getContextPath() + "/Editor?doc=" + docName);
-				}
-				else {
-					//Document du même nom existe déjà
-					request.setAttribute("error", 2);
-					RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/DocumentChoice.jsp");
-					rd.forward(request, response);
-				}
+		if(docName != null) {
+			
+			if(docName.equals("")) {
+				//Si le formulaire n'est pas rempli
+				request.setAttribute("error", 1);
+				RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/DocumentChoice.jsp");
+				rd.forward(request, response);
 			}
-			else if(request.getParameter("find") != null) {
-				/*
-				 * Des choses à faire..
-				 */
-				int retour = findDocument(docName, user);
-				if(retour == 0) {
-					response.sendRedirect(request.getContextPath() + "/Editor?doc=" + docName);
-				}
-				else if (retour == 1) {
-					//Document introuvable
-					request.setAttribute("error", 3);
-					RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/DocumentChoice.jsp");
-					rd.forward(request, response);
-				}
-				else {
-					//L'utilisateur n'a pas acces à ce document
-					request.setAttribute("error", 4);
-					RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/DocumentChoice.jsp");
-					rd.forward(request, response);
-				}
-			}
+			
 			else {
-				//Cas d'erreur bizzare qui ne devrait pas arriver en theorie
-				System.out.println("DocumentChoice: doPost detected but no form button was previously clicked.");
+				//Si le formumaire est rempli
+				if(request.getParameter("create") != null) {
+					/*
+					 * Des choses à faire..
+					 */
+					if(createDocument(docName, user)) {
+						System.out.println("User: " + user.getUsername() + " created document " + docName + " successfully.");
+						response.sendRedirect(request.getContextPath() + "/Editor?doc=" + docName);
+					}
+					else {
+						//Document du même nom existe déjà
+						request.setAttribute("error", 2);
+						RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/DocumentChoice.jsp");
+						rd.forward(request, response);
+					}
+				}
+				else if(request.getParameter("find") != null) {
+					/*
+					 * Des choses à faire..
+					 */
+					int retour = findDocument(docName, user);
+					if(retour == 0) {
+						response.sendRedirect(request.getContextPath() + "/Editor?doc=" + docName);
+					}
+					else if (retour == 1) {
+						//Document introuvable
+						request.setAttribute("error", 3);
+						RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/DocumentChoice.jsp");
+						rd.forward(request, response);
+					}
+					else {
+						//L'utilisateur n'a pas acces à ce document
+						request.setAttribute("error", 4);
+						RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/DocumentChoice.jsp");
+						rd.forward(request, response);
+					}
+				}
+				else {
+					//Cas d'erreur bizzare qui ne devrait pas arriver en theorie
+					System.out.println("DocumentChoice: doPost detected but no form button was previously clicked.");
+				}
 			}
+			
+		}
+		else {
+			doGet(request, response);
 		}
 	}
 	

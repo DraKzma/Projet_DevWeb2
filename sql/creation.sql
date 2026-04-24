@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS hasAccessTo(
 	user_id INT NOT NULL,
 	document_id INT NOT NULL,
 	role ENUM('VIEWER', 'WRITER', 'OWNER') NOT NULL,
-	FOREIGN KEY (user_id) REFERENCES users(id),
-	FOREIGN KEY (document_id) REFERENCES documents(id),
+	FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+	FOREIGN KEY (document_id) REFERENCES documents(id) ON DELETE CASCADE,
 	PRIMARY KEY (user_id, document_id)
 );

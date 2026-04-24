@@ -13,7 +13,14 @@
 	1: Formulaire non rempli correctement 
 	2: Document du même nom déjà existant dans la base (create) 
 	3: Document inexistant (find) 
-	4: L'utilisateur n'as pas access au document (find) --%>
+	4: L'utilisateur n'as pas access au document (find) 
+	5: Formulaire Delete User pas rempli
+	6: User supprimee avec succes
+	7: User n'est pas dans la base
+	8: User est un admin
+	9: Formulaire Delete Document pas rempli 
+	10: Document supprimee avec succes
+	11: Document n'existe pas --%>
 	<% int erreur = (int) request.getAttribute("error"); User user = (User) session.getAttribute("user"); int role = user.getPermissions(); %>
 		<div id="DocumentChoiceBlock">
 		
@@ -47,10 +54,18 @@
 			
 				<input id="DocumentChoiceUsername" name="Username" class="InputBox" type="text" placeholder="Username">
 				
-				<button type="submit" id="DocumentChoiceDeleteUser" name="deleteUser" class="SubmitButton">DeleteDocument</button>
+				<button type="submit" id="DocumentChoiceDeleteUser" name="deleteUser" class="SubmitButton">DeleteUser</button>
 			
 			</form>
-			
+		<% if(erreur == 5){ %>
+			<p class="ErrorText">The form is not correctly filled.</p>
+		<% } else if(erreur == 6){ %>
+			<p class="ErrorText">User deleted successfully.</p>
+		<% } else if(erreur == 7){ %>
+			<p class ="ErrorText">This user doesn't exist.</p>		
+		<% }else if (erreur == 8){ %>
+			<p class="ErrorText">You cannot delete another admin user.</p>
+		<% } %>
 		</div>
 		
 		<div id="DocumentChoiceDeleteDocument">
@@ -61,10 +76,16 @@
 			
 				<input id="DocumentChoiceDocumentName" name="documentName" class="InputBox" type="text" placeholder="DocumentName">
 				
-				<button type="submit" id="DocumentChoiceDeleteDocument" name="deleteDocument" class="SubmitButton">DeleteUser</button>
+				<button type="submit" id="DocumentChoiceDeleteDocument" name="deleteDocument" class="SubmitButton">DeleteDocument</button>
 			
 			</form>
-			
+		<% if(erreur == 9){ %>
+			<p class="ErrorText">The form is not correctly filled.</p>
+		<% } else if(erreur == 10){ %>
+			<p class="ErrorText">Document deleted successfully.</p>
+		<% } else if(erreur == 11){ %>
+			<p class ="ErrorText">This document doesn't exist.</p>		
+		<% } %>
 		</div>
 		<% } %>
 		<div id="DocumentChoiceSignOffBlock">

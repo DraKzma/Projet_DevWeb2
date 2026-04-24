@@ -46,11 +46,12 @@ public class DocumentChoice extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String docName = request.getParameter("DocName");
 		HttpSession session = request.getSession();
 		User user = (User) session.getAttribute("user");
 		
-		if(docName != null) {
+		if(request.getParameter("create") != null || request.getParameter("find") != null) {
+			
+			String docName = request.getParameter("DocName");
 			
 			if(docName.equals("")) {
 				//Si le formulaire n'est pas rempli
@@ -76,7 +77,7 @@ public class DocumentChoice extends HttpServlet {
 						rd.forward(request, response);
 					}
 				}
-				else if(request.getParameter("find") != null) {
+				else {
 					/*
 					 * Des choses à faire..
 					 */
@@ -97,16 +98,202 @@ public class DocumentChoice extends HttpServlet {
 						rd.forward(request, response);
 					}
 				}
-				else {
-					//Cas d'erreur bizzare qui ne devrait pas arriver en theorie
-					System.out.println("DocumentChoice: doPost detected but no form button was previously clicked.");
-				}
 			}
 			
 		}
-		else {
-			doGet(request, response);
+		else if(request.getParameter("deleteUser") != null){
+			
+			String usernameDelete = request.getParameter("Username");
+			
+			if(usernameDelete.equals("")) {
+				//Si le formulaire n'est pas rempli
+				request.setAttribute("error", 5);
+				RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/DocumentChoice.jsp");
+				rd.forward(request, response);
+			}
+			else {
+				//Formulaire rempli
+				int retour = deleteUser(usernameDelete);
+				if(retour == 0) {
+					request.setAttribute("error", 6);
+					RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/DocumentChoice.jsp");
+					rd.forward(request, response);
+				}
+				else if(retour == 1) {
+					request.setAttribute("error", 7);
+					RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/DocumentChoice.jsp");
+					rd.forward(request, response);
+				}
+				else {
+					request.setAttribute("error", 8);
+					RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/DocumentChoice.jsp");
+					rd.forward(request, response);
+				}
+			}
 		}
+		else if(request.getParameter("deleteDocument") != null) {
+			
+			String documentDelete = request.getParameter("documentName");
+			
+			if(documentDelete.equals("")) {
+				//Si le formulaire n'est pas rempli
+				request.setAttribute("error", 9);
+				RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/DocumentChoice.jsp");
+				rd.forward(request, response);
+			}
+			else {
+				//Formulaire rempli
+				int retour = deleteDocument(documentDelete);
+				if(retour == 0) {
+					request.setAttribute("error", 10);
+					RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/DocumentChoice.jsp");
+					rd.forward(request, response);
+				}
+				else {
+					request.setAttribute("error", 11);
+					RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/DocumentChoice.jsp");
+					rd.forward(request, response);
+				}
+			}
+		}
+		else {
+			//Erreur bizzare qui ne devrait pas se produire
+			System.out.println("ERROR, doPost detected but no form was previously submitted.");
+		}
+	}
+	
+	//Fonction qui supprime un document de la base
+	/*
+	 * Valeurs de retour:
+	 * 0: tout s'est bien passee
+	 * 1: le document n'existe pas
+	 */
+	public int deleteDocument(String docName) {
+		
+		try {
+			Connection connexion = DriverManager.getConnection(ParamBD.bdUrl, ParamBD.bdLogin, ParamBD.bdPassword);
+			
+			String sql = " SELECT id"
+					+ " FROM documents"
+					+ " WHERE name = ?;";
+			PreparedStatement pst = connexion.prepareStatement(sql);
+			pst.setString(1, docName);
+			ResultSet rs = pst.executeQuery();
+			if(!rs.next()) {
+				//Document n'existe pas
+				return 1;
+			}
+			
+			int document_id = rs.getInt("id");
+			sql = "DELETE FROM documents"
+				+ " WHERE id = ?;";
+			pst = connexion.prepareStatement(sql);
+			pst.setInt(1, document_id);
+			pst.executeUpdate();
+			
+			File dossier = new File(System.getProperty("user.home") + CHEMIN_FICHIERS);
+			File fichier = new File(dossier.getAbsolutePath() + "/" + docName + EXTENSION_FICHIERS);
+			if(fichier.exists()) {
+				if(!fichier.delete()) {
+					System.out.println("ERROR. Impossible de supprimer le fichier du serveur.");
+				}
+			}
+			
+			rs.close(); pst.close(); connexion.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return 0;
+		
+	}
+	
+	//Fonction qui supprime un user de la base et les donnees qui lui sont associees
+	/*
+	 * Valeurs de retour:
+	 * 0: tout s'est bien passee
+	 * 1: le user n'existe pas
+	 * 2: le user est admin
+	 */
+	public int deleteUser(String username) {
+		
+		try {
+			Connection connexion = DriverManager.getConnection(ParamBD.bdUrl, ParamBD.bdLogin, ParamBD.bdPassword);
+			
+			String sql = "SELECT permissions, id"
+					+ " FROM users"
+					+ " WHERE username = ?;";
+			PreparedStatement pst = connexion.prepareStatement(sql);
+			pst.setString(1, username);
+			
+			ResultSet rs = pst.executeQuery();
+			if(!rs.next()) {
+				//Le user n'existe pas
+				return 1;
+			}
+			
+			int perms = rs.getInt("permissions");
+			if(perms == 2) {
+				//Le user est un admin
+				return 2;
+			}
+			
+			//On recupere les documents de l'user pour les supprimer
+			int user_id = rs.getInt("id");
+			sql = "SELECT document_id"
+				+ " FROM hasAccessTo"
+				+ " WHERE user_id = ?"
+				+ " AND role = \'OWNER\';";
+			pst = connexion.prepareStatement(sql);
+			pst.setInt(1, user_id);
+			rs = pst.executeQuery();
+			
+			ResultSet rstmp;
+			while(rs.next()) {
+				int document_id = rs.getInt("document_id");
+				sql = "SELECT name"
+					+ " FROM documents"
+					+ " WHERE id = ?;";
+				pst = connexion.prepareStatement(sql);
+				pst.setInt(1, document_id);
+				rstmp = pst.executeQuery();
+				if(!rstmp.next()) {
+					System.out.println("ERROR. Files on database do not match actual server files.");
+				}
+				String documentName = rstmp.getString("name");
+				
+				sql = "DELETE FROM documents"
+					+ " WHERE id = ?;";
+				pst = connexion.prepareStatement(sql);
+				pst.setInt(1, document_id);
+				pst.executeUpdate();
+				
+				File dossier = new File(System.getProperty("user.home") + CHEMIN_FICHIERS);
+				File fichier = new File(dossier.getAbsolutePath() + "/" + documentName + EXTENSION_FICHIERS);
+				if(fichier.exists()) {
+					if(!fichier.delete()) {
+						System.out.println("ERROR. Impossible de supprimer le fichier du serveur.");
+					}
+				}
+				
+				rstmp.close();
+				
+			}
+			
+			sql = "DELETE FROM users"
+				+ " WHERE username = ?;";
+			pst = connexion.prepareStatement(sql);
+			pst.setString(1, username);
+			pst.executeUpdate();
+			
+			rs.close(); pst.close(); connexion.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return 0;
+		
 	}
 	
 	//Fonction qui cherche le document dans la base de données

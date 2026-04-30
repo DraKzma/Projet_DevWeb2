@@ -41,7 +41,7 @@
 		
 		<div id="userListBlock">
 		
-			<h2 id ="EditorUserListTitle">User List</h2>
+			<h2 id ="EditorUserListTitle">Owner & Writers List</h2>
 			
 			<ul id="userList">
 			<c:forEach var="entry" items="${userList}">

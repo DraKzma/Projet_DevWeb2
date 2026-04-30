@@ -55,7 +55,9 @@ public class Editor extends HttpServlet {
 			int document_id = rs.getInt("id");
 			sql = " SELECT user_id, role"
 				+ " FROM hasAccessTo"
-				+ " WHERE document_id = ?;";
+				+ " WHERE document_id = ?"
+				+ " AND role = \'OWNER\'"
+				+ " OR role = \'WRITER\';";
 			pst = connexion.prepareStatement(sql);
 			pst.setInt(1, document_id);
 			rs = pst.executeQuery();

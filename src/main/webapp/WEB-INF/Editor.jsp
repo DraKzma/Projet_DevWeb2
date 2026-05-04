@@ -1,3 +1,4 @@
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.util.HashMap" %>
@@ -7,6 +8,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Editor</title>
+		<link rel="stylesheet" href="style.css">
 	</head>
 	<body>
 	<%-- Valeur de l'attribut "error":
@@ -30,7 +32,14 @@
 		<div id="document">
 		
 			<h2 id="EditorDocumentTitle">Document</h2>
+			<form method="post">
 		
+		        <textarea name="content" rows="20" cols="80">${content}</textarea>
+				<br><br>
+		        <button type="submit" name="save" class="SubmitButton">Save</button>
+		        <button type="submit" name="download" class="SubmitButton">Download</button>
+		        <button type="submit" name="delete" class="SubmitButton">Delete</button>
+		    </form>
 		</div>
 		
 		<div id="chat">
@@ -95,32 +104,7 @@
 		<% } %>
 		</div>
 		
-		<div id="DeleteForm">
-			
-			<h2 id="EditorDeleteTitle">Delete Document</h2>
-			
-			<form method="post">
-					
-				<button type="submit" id="EditorDelete" name="delete" class="SubmitButton">Delete</button>
-					
-			</form>
-			
-		</div>
-	<% } %> <% if(role.equals("OWNER") || role.equals("WRITER")){ %>
-		<div id="SaveForm">
-			
-			<h2 id="EditorSaveTitle">Save Document</h2>
-			
-			<form method="post">
-					
-				<button type="submit" id="EditorSave" name="save" class="SubmitButton">Save</button>
-				
-				<button type="submit" id="EditorDownload" name="download" class="SubmitButton">Download</button>
-					
-			</form>
-			
 		</div>
 	<% } %>
-
 	</body>
 </html>

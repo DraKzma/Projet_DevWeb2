@@ -128,7 +128,7 @@ public class Editor extends HttpServlet {
 		HttpSession session = request.getSession();
 		User user = (User) session.getAttribute("user");
 		String docName = request.getParameter("doc");
-		
+		String content  = request.getParameter("content");
 		reviwewRole(user, docName);
 		request.setAttribute("role", user_role);
 		
@@ -237,7 +237,8 @@ public class Editor extends HttpServlet {
 			response.sendRedirect(request.getContextPath() + "/DocumentChoice");
 		}
 		else if(request.getParameter("save") != null) {
-			doGet(request, response);
+			saveDocument(docName, content);
+			response.sendRedirect(request.getContextPath() + "/Editor?doc=PROUT" + docName);
 		}
 		else if(request.getParameter("download") != null){
 			doGet(request, response);
@@ -254,6 +255,41 @@ public class Editor extends HttpServlet {
 	 * 0: tout s'est bien passee
 	 * 1: le document n'existe pas
 	 */
+	public int saveDocument(String docName, String content) {
+		
+		try {
+			Connection connexion = DriverManager.getConnection(ParamBD.bdUrl, ParamBD.bdLogin, ParamBD.bdPassword);
+			
+			String sql = " SELECT id"
+					+ " FROM documents"
+					+ " WHERE name = ?;";
+			PreparedStatement pst = connexion.prepareStatement(sql);
+			pst.setString(1, docName);
+			ResultSet rs = pst.executeQuery();
+			if(!rs.next()) {
+				//Document n'existe pas
+				return 1;
+			}
+			
+			int document_id = rs.getInt("id");
+			sql = "UPDATE documents"
+				+ " SET content = ?"
+				+ " WHERE id = ?;";
+			pst = connexion.prepareStatement(sql);
+			pst.setString(1, content);
+			pst.setInt(2, document_id);
+			pst.executeUpdate();
+			int updated = pst.executeUpdate();
+			System.out.println("ROWS UPDATED = " + updated);
+			rs.close(); pst.close(); connexion.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return 0;
+		
+	}
 	public int deleteDocument(String docName) {
 		
 		try {

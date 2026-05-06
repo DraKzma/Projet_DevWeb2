@@ -8,7 +8,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -237,8 +239,10 @@ public class Editor extends HttpServlet {
 			response.sendRedirect(request.getContextPath() + "/DocumentChoice");
 		}
 		else if(request.getParameter("save") != null) {
+			request.setAttribute("error", 14);
 			saveDocument(docName, content);
-			response.sendRedirect(request.getContextPath() + "/Editor?doc=PROUT" + docName);
+			RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/Editor.jsp");
+			rd.forward(request, response);
 		}
 		else if(request.getParameter("download") != null){
 			doGet(request, response);
@@ -249,47 +253,35 @@ public class Editor extends HttpServlet {
 		}
 	}
 	
-	//Fonction qui supprime un document de la base
-	/*
-	 * Valeurs de retour:
-	 * 0: tout s'est bien passee
-	 * 1: le document n'existe pas
-	 */
 	public int saveDocument(String docName, String content) {
 		
+		FileWriter fw;
 		try {
-			Connection connexion = DriverManager.getConnection(ParamBD.bdUrl, ParamBD.bdLogin, ParamBD.bdPassword);
-			
-			String sql = " SELECT id"
-					+ " FROM documents"
-					+ " WHERE name = ?;";
-			PreparedStatement pst = connexion.prepareStatement(sql);
-			pst.setString(1, docName);
-			ResultSet rs = pst.executeQuery();
-			if(!rs.next()) {
-				//Document n'existe pas
-				return 1;
-			}
-			
-			int document_id = rs.getInt("id");
-			sql = "UPDATE documents"
-				+ " SET content = ?"
-				+ " WHERE id = ?;";
-			pst = connexion.prepareStatement(sql);
-			pst.setString(1, content);
-			pst.setInt(2, document_id);
-			pst.executeUpdate();
-			int updated = pst.executeUpdate();
-			System.out.println("ROWS UPDATED = " + updated);
-			rs.close(); pst.close(); connexion.close();
-			
-		} catch (SQLException e) {
+			File dossier = new File(System.getProperty("user.home") + CHEMIN_FICHIERS);
+			File fichier = new File(dossier.getAbsolutePath() + "/" + docName + EXTENSION_FICHIERS);
+			System.out.println(dossier.getAbsolutePath() + "/" + docName + EXTENSION_FICHIERS);
+			System.out.println(content);
+			fw = new FileWriter(fichier);
+			BufferedWriter bw = new BufferedWriter(fw);
+			String ligne;
+			bw.write(content);
+			bw.flush();
+			bw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		return 0;
 		
 	}
+	
+	//Fonction qui supprime un document de la base
+	/*
+	 * Valeurs de retour:
+	 * 0: tout s'est bien passee
+	 * 1: le document n'existe pas
+	 */
 	public int deleteDocument(String docName) {
 		
 		try {

@@ -25,7 +25,8 @@
 	10: Utilisateur set to WRITER
 	11: Utilisateur n'existe pas
 	12: Impossible de se set soi meme to WRITER
-	13: L'utilisateur est deja un WRITER --%>
+	13: L'utilisateur est deja un WRITER
+	14: Document sauvegzrdee --%>
 	<% String role = (String) request.getAttribute("role"); int erreur = (int) request.getAttribute("error"); HashMap<String, String> userList = (HashMap<String, String>) request.getAttribute("userList"); %>
 		<h1 id="EditorTitle">Editor</h1>
 		
@@ -40,6 +41,10 @@
 		        <button type="submit" name="download" class="SubmitButton">Download</button>
 		        <button type="submit" name="delete" class="SubmitButton">Delete</button>
 		    </form>
+		    
+		<% if(erreur == 14){ %>
+			<p class="ErrorText">Document saved successfully.</p>
+		<% } %>
 		</div>
 		
 		<div id="chat">

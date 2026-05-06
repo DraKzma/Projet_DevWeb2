@@ -8,8 +8,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
@@ -93,6 +96,15 @@ public class Editor extends HttpServlet {
 		HttpSession session = request.getSession();
 		User user = (User) session.getAttribute("user");
 		String docName = request.getParameter("doc");
+		String content = "";
+		if(docName != null && !docName.equals("")) {
+			content = lectureDocument(docName);
+		}
+		if(!content.equals("")) {
+			request.setAttribute("content", content);
+		}
+		
+		System.out.println(content);
 		
 		if(user != null) {
 			//L'utilisateur connectee peut acceder à la page
@@ -130,13 +142,17 @@ public class Editor extends HttpServlet {
 		HttpSession session = request.getSession();
 		User user = (User) session.getAttribute("user");
 		String docName = request.getParameter("doc");
-		String content  = request.getParameter("content");
+		String content = "";
+		content  = request.getParameter("content");
 		reviwewRole(user, docName);
 		request.setAttribute("role", user_role);
 		
 		setUserList(docName);
 		printUserList();
 		request.setAttribute("userList", userList);
+		if(!content.equals("")) {
+			request.setAttribute("content", content);
+		}
 		
 		if(request.getParameter("ban") != null || request.getParameter("viewer") != null || request.getParameter("writer") != null) {
 			
@@ -241,6 +257,7 @@ public class Editor extends HttpServlet {
 		else if(request.getParameter("save") != null) {
 			request.setAttribute("error", 14);
 			saveDocument(docName, content);
+			
 			RequestDispatcher rd = request.getRequestDispatcher("WEB-INF/Editor.jsp");
 			rd.forward(request, response);
 		}
@@ -252,15 +269,42 @@ public class Editor extends HttpServlet {
 			System.out.println("ERROR, doPost detected but no form was previously submitted.");
 		}
 	}
-	
-	public int saveDocument(String docName, String content) {
-		
-		FileWriter fw;
+	public String lectureDocument(String docName) {
+		FileReader fr;
+		String content = null;
 		try {
 			File dossier = new File(System.getProperty("user.home") + CHEMIN_FICHIERS);
 			File fichier = new File(dossier.getAbsolutePath() + "/" + docName + EXTENSION_FICHIERS);
-			System.out.println(dossier.getAbsolutePath() + "/" + docName + EXTENSION_FICHIERS);
-			System.out.println(content);
+			fr = new FileReader(fichier);
+			BufferedReader br = new BufferedReader(fr);	
+			
+			String ligne;
+			try {
+				while ((ligne = br.readLine()) != null){
+					content += ligne + "\n";
+				}
+				br.close();
+				fr.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return content;
+		
+	}
+	public int saveDocument(String docName, String content) {
+		
+		FileWriter fw;
+		System.out.println(content);
+		try {
+			File dossier = new File(System.getProperty("user.home") + CHEMIN_FICHIERS);
+			File fichier = new File(dossier.getAbsolutePath() + "/" + docName + EXTENSION_FICHIERS);
 			fw = new FileWriter(fichier);
 			BufferedWriter bw = new BufferedWriter(fw);
 			String ligne;

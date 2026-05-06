@@ -27,7 +27,7 @@
 	12: Impossible de se set soi meme to WRITER
 	13: L'utilisateur est deja un WRITER
 	14: Document sauvegzrdee --%>
-	<% String role = (String) request.getAttribute("role"); int erreur = (int) request.getAttribute("error"); HashMap<String, String> userList = (HashMap<String, String>) request.getAttribute("userList"); %>
+	<% String role = (String) request.getAttribute("role"); int erreur = (int) request.getAttribute("error"); HashMap<String, String> userList = (HashMap<String, String>) request.getAttribute("userList"); String content = (String)request.getAttribute("content"); %>
 		<h1 id="EditorTitle">Editor</h1>
 		
 		<div id="document">

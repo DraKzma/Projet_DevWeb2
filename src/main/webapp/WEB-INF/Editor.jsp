@@ -47,11 +47,18 @@
 		<% } %>
 		</div>
 		
-		<div id="chat">
-		
-			<h2 id="EditorChatTitle">Chat</h2>
-		
+		<div id="tchat">
+		    <div id="messages-box" style="height: 300px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px;">
+		        </div>
+		    
+		    <input type="text" id="message-input" placeholder="Écrivez un message..." onkeypress="handleKeyPress(event)"/>
+		    <button onclick="sendMessage()">Envoyer</button>
 		</div>
+		<script>
+		    // on récup le pseudo s'il existe
+			var pseudoUtilisateur = "${not empty sessionScope.user ? sessionScope.user.username : 'Utilisateur'}";		
+		</script>
+		<script src="${pageContext.request.contextPath}/chat.js"></script>
 		
 		<div id="userListBlock">
 		

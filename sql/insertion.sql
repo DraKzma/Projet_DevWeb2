@@ -1,4 +1,4 @@
---permissions: 1 pour user classique / 2 pour admin
+-- permissions: 1 pour user classique / 2 pour admin
 
 INSERT INTO users (id, username, password, permissions)
 VALUES (NULL, 'Anthony', 'Adrien', 2);

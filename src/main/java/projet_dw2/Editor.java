@@ -100,8 +100,8 @@ public class Editor extends HttpServlet {
 		if(docName != null && !docName.equals("")) {
 			content = lectureDocument(docName);
 		}
-		if(!content.equals("")) {
-			request.setAttribute("content", content);
+		if(content != null && !content.equals("")) {
+		    request.setAttribute("content", content);
 		}
 		
 		System.out.println(content);
@@ -271,7 +271,7 @@ public class Editor extends HttpServlet {
 	}
 	public String lectureDocument(String docName) {
 		FileReader fr;
-		String content = null;
+		String content = "";
 		try {
 			File dossier = new File(System.getProperty("user.home") + CHEMIN_FICHIERS);
 			File fichier = new File(dossier.getAbsolutePath() + "/" + docName + EXTENSION_FICHIERS);

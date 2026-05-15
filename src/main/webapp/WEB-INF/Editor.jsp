@@ -59,9 +59,14 @@
 			    <input type="hidden" name="content" id="hiddenContent">
 			
 			    <br>
+			    <% if(role.equals("OWNER") || role.equals("WRITER")){ %>
 			    <button type="submit" name="save" class="SubmitButton">Save</button>
 			    <button type="submit" name="download" class="SubmitButton">Download</button>
+			    
+			    <% } %>
+			    <% if(role.equals("OWNER")){ %>
 			    <button type="submit" name="delete" class="SubmitButton">Delete</button>
+			    <% } %>
 			</form>
 		    
 		<% if(erreur == 14){ %>

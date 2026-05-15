@@ -100,12 +100,10 @@ public class Editor extends HttpServlet {
 		if(docName != null && !docName.equals("")) {
 			content = lectureDocument(docName);
 		}
-		if(content != null && !content.equals("")) {
+		if(content != null && !content.isEmpty()) {
 		    request.setAttribute("content", content);
 		}
-		
-		System.out.println(content);
-		
+				
 		if(user != null) {
 			//L'utilisateur connectee peut acceder à la page
 			int retour = reviwewRole(user, docName);
@@ -143,14 +141,17 @@ public class Editor extends HttpServlet {
 		User user = (User) session.getAttribute("user");
 		String docName = request.getParameter("doc");
 		String content = "";
-		content  = request.getParameter("content");
+		String contentParam = request.getParameter("content");
+		if(contentParam != null) {
+		    content = contentParam;
+		}
 		reviwewRole(user, docName);
 		request.setAttribute("role", user_role);
 		
 		setUserList(docName);
 		printUserList();
 		request.setAttribute("userList", userList);
-		if(!content.equals("")) {
+		if(!content.isEmpty()) {
 			request.setAttribute("content", content);
 		}
 		

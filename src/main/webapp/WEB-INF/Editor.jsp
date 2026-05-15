@@ -33,14 +33,36 @@
 		<div id="document">
 		
 			<h2 id="EditorDocumentTitle">Document</h2>
-			<form method="post">
-		
-		        <textarea name="content" rows="20" cols="80">${content}</textarea>
-				<br><br>
-		        <button type="submit" name="save" class="SubmitButton">Save</button>
-		        <button type="submit" name="download" class="SubmitButton">Download</button>
-		        <button type="submit" name="delete" class="SubmitButton">Delete</button>
-		    </form>
+			<form method="post" onsubmit="syncContent()">
+			    <div id="toolbar">
+			        <button type="button" onclick="fmt('bold')" title="Gras"><b>G</b></button>
+			        <button type="button" onclick="fmt('italic')" title="Italique"><i>I</i></button>
+			        <button type="button" onclick="fmt('underline')" title="Souligné"><u>S</u></button>
+			        <button type="button" onclick="fmt('strikeThrough')" title="Barré"><s>B</s></button>
+			        <select onchange="fmt('fontSize', this.value); this.selectedIndex=0">
+			            <option value="">Taille</option>
+			            <option value="1">Petit</option>
+			            <option value="3">Normal</option>
+			            <option value="5">Grand</option>
+			            <option value="7">Très grand</option>
+			        </select>
+			        <button type="button" onclick="fmt('justifyLeft')" title="Gauche">◀</button>
+			        <button type="button" onclick="fmt('justifyCenter')" title="Centre">▣</button>
+			        <button type="button" onclick="fmt('justifyRight')" title="Droite">▶</button>
+			    </div>
+			
+			    <% if(role.equals("OWNER") || role.equals("WRITER")){ %>
+				    <div id="editor" contenteditable="true">${content}</div>
+				<% } else { %>
+				    <div id="editor" contenteditable="false">${content}</div>
+				<% } %>
+			    <input type="hidden" name="content" id="hiddenContent">
+			
+			    <br>
+			    <button type="submit" name="save" class="SubmitButton">Save</button>
+			    <button type="submit" name="download" class="SubmitButton">Download</button>
+			    <button type="submit" name="delete" class="SubmitButton">Delete</button>
+			</form>
 		    
 		<% if(erreur == 14){ %>
 			<p class="ErrorText">Document saved successfully.</p>
@@ -54,11 +76,6 @@
 		    <input type="text" id="message-input" placeholder="Écrivez un message..." onkeypress="handleKeyPress(event)"/>
 		    <button onclick="sendMessage()">Envoyer</button>
 		</div>
-		<script>
-		    // on récup le pseudo s'il existe
-			var pseudoUtilisateur = "${not empty sessionScope.user ? sessionScope.user.username : 'Utilisateur'}";		
-		</script>
-		<script src="${pageContext.request.contextPath}/chat.js"></script>
 		
 		<div id="userListBlock">
 		
@@ -118,5 +135,12 @@
 		
 		</div>
 	<% } %>
+		<script>
+		    var pseudoUtilisateur = "${not empty sessionScope.user ? sessionScope.user.username : 'Utilisateur'}";
+		    var contextPath = "${pageContext.request.contextPath}";
+		    var docName = new URLSearchParams(window.location.search).get('doc');
+		</script>
+		<script src="${pageContext.request.contextPath}/chat.js"></script>
+		<script src="${pageContext.request.contextPath}/editor.js"></script>
 	</body>
 </html>

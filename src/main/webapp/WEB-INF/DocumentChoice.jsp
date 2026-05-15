@@ -55,7 +55,7 @@
 			
 				<input id="DocumentChoiceUsername" name="Username" class="InputBox" type="text" placeholder="Username">
 				
-				<button type="submit" id="DocumentChoiceDeleteUser" name="deleteUser" class="SubmitButton">DeleteUser</button>
+				<button type="submit" id="DocumentChoiceDeleteUserButton" name="deleteUser" class="SubmitButton">DeleteUser</button>
 			
 			</form>
 		<% if(erreur == 5){ %>
@@ -77,7 +77,7 @@
 			
 				<input id="DocumentChoiceDocumentName" name="documentName" class="InputBox" type="text" placeholder="DocumentName">
 				
-				<button type="submit" id="DocumentChoiceDeleteDocument" name="deleteDocument" class="SubmitButton">DeleteDocument</button>
+				<button type="submit" id="DocumentChoiceDeleteDocumentButton" name="deleteDocument" class="SubmitButton">DeleteDocument</button>
 			
 			</form>
 		<% if(erreur == 9){ %>

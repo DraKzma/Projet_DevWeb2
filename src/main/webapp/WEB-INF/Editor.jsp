@@ -60,8 +60,8 @@
 			
 			    <br>
 			    <% if(role.equals("OWNER") || role.equals("WRITER")){ %>
-			    <button type="submit" name="save" class="SubmitButton">Save</button>
-			    <button type="submit" name="download" class="SubmitButton">Download</button>
+			    <button type="submit" name="save" class="SubmitButton" onclick="syncContent()">Save</button>
+			    <button type="submit" name="download" class="SubmitButton" onclick="syncContent()">Download</button>
 			    
 			    <% } %>
 			    <% if(role.equals("OWNER")){ %>

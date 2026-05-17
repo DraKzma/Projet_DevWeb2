@@ -29,6 +29,11 @@
 	14: Document sauvegzrdee --%>
 	<% String role = (String) request.getAttribute("role"); int erreur = (int) request.getAttribute("error"); HashMap<String, String> userList = (HashMap<String, String>) request.getAttribute("userList"); String content = (String)request.getAttribute("content"); %>
 		<h1 id="EditorTitle">Editor</h1>
+		<div style="margin-bottom: 20px; text-align: center;">
+		    <a href="${pageContext.request.contextPath}/DocumentChoice">
+		        <button type="button" class="SubmitButton">Retour à la sélection</button>
+		    </a>
+		</div>
 		
 		<div id="document">
 		

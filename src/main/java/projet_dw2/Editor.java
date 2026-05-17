@@ -263,33 +263,7 @@ public class Editor extends HttpServlet {
 			rd.forward(request, response);
 		}
 		else if(request.getParameter("download") != null){
-		    response.reset();
-		    
-		    response.setContentType("application/octet-stream");
-		    response.setHeader("Content-Disposition", "attachment; filename=\"" + docName + EXTENSION_FICHIERS + "\"");
-		    
-		    try {
-		        
-		        if (content == null || content.trim().isEmpty()) {
-		            content = lectureDocument(docName);
-		        }
-		        
-		        if (content == null) {
-		            content = "";
-		        }
-		        
-		        byte[] fileBytes = content.getBytes("UTF-8");
-		        response.setContentLength(fileBytes.length);
-		        
-		        java.io.OutputStream os = response.getOutputStream();
-		        os.write(fileBytes); 
-		        os.flush();
-		        os.close();
-		        
-		        return; 
-		    } catch (IOException e) {
-		        e.printStackTrace();
-		    }
+		    /* géré en js */
 		}
 		else {
 			System.out.println("ERROR, doPost detected but no form was previously submitted.");

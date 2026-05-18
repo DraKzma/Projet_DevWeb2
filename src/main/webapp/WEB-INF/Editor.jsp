@@ -32,7 +32,7 @@
 
 		<div id="DocumentChoiceSignOffBlock">
 		
-			<span class="DocumentChoiceSpan"><a href="http://localhost:8080/Projet_DevWeb2/SignOff" class="DocumentChoicebuttonLink" id="DocumentChoiceSignOff">Back</a></span>
+			<span class="DocumentChoiceSpan"><a href="http://localhost:8080/Projet_DevWeb2/DocumentChoice" class="DocumentChoicebuttonLink" id="DocumentChoiceSignOff">Back</a></span>
 		
 		</div>
 		

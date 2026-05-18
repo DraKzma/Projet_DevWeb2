@@ -29,10 +29,11 @@
 	14: Document sauvegzrdee --%>
 	<% String role = (String) request.getAttribute("role"); int erreur = (int) request.getAttribute("error"); HashMap<String, String> userList = (HashMap<String, String>) request.getAttribute("userList"); String content = (String)request.getAttribute("content"); %>
 		<h1 id="EditorTitle">Editor</h1>
-		<div style="margin-bottom: 20px; text-align: center;">
-		    <a href="${pageContext.request.contextPath}/DocumentChoice">
-		        <button type="button" class="SubmitButton">Retour à la sélection</button>
-		    </a>
+
+		<div id="DocumentChoiceSignOffBlock">
+		
+			<span class="DocumentChoiceSpan"><a href="http://localhost:8080/Projet_DevWeb2/SignOff" class="DocumentChoicebuttonLink" id="DocumentChoiceSignOff">Back</a></span>
+		
 		</div>
 		
 		<div id="document">
@@ -141,8 +142,6 @@
 		<% }else if(erreur == 13){ %>
 			<p class="ErrorText">This user is already a WRITER.</p>
 		<% } %>
-		</div>
-		
 		</div>
 	<% } %>
 		<script>

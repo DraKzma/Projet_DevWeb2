@@ -24,10 +24,10 @@ SOURCE sql/creation.sql; SOURCE sql/insertion.sql;
 - liste des membres ayant acces au document en cours ainsi que leur role dans Editor
 - Permettre aux admins du site de pouvoir supprimer un document du site, et de pouvoir supprimer un user du site depuis la page DocumentChoice
 - Permettre aux OWNER d'un document d'ajouter des WRITER, de bannir des VIEWER, et de supprimer le document du serveur
-
-**A faire:**
 - css
 - systeme de chat dans Editor
 - edition de document dans Editor
 - Permettre aux WRITER d'un document de sauvegarder leurs modifications, et de télécharger le document sur leur machine. Les VIEWER peuvent seulement voir la page
+
+
 
